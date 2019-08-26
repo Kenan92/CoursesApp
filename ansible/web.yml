@@ -1,0 +1,36 @@
+---
+  - hosts: web_servers
+    gather_facts: false
+    become: true
+
+    vars_files:
+      - web_vars.yml
+      - "{{ env }}_vars.yml"
+
+    tasks:
+      - name: Install php and apache2 web server
+        apt:
+          name: ['php', 'apache2']
+          state: present
+      - name: Install needed php extensions
+        apt:
+          name: "{{ php_extentions }}"
+      - name: Check composer version
+        shell:
+          composer -V
+        ignore_errors: true
+        register: cur_composer_version
+        changed_when: false
+      - name: Download composer installer
+        get_url:
+          url: https://getcomposer.org/installer
+          dest: /root/composer-setup.php
+        when: cur_composer_version.rc != 0 or cur_composer_version.stdout.split(' ')[2] != composer_version
+      - name: Install composer
+        shell:
+          php /root/composer-setup.php --install-dir /usr/local/bin --filename composer --version {{ composer_version }}
+        when: cur_composer_version.rc != 0 or cur_composer_version.stdout.split(' ')[2] != composer_version
+      - name: Run composer
+        composer:
+          working_dir: "{{ web_dir }}"
+          command: install
