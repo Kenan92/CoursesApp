@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
   # via 127.0.0.1 to disable public access
-  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
       wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias python=python3"
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias runapp='php -S 0.0.0.0:8080 -t /vagrant/coursesapp/public /vagrant/coursesapp/public/index.php'"
-      python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias deploy='ansible-playbook /vagrant/ansible/site.yml -e env=dev'"
+      python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias deploy='ansible-playbook /vagrant/ansible/site.yml -e env=dev --vault-password-file /vagrant/ansible/.vault'"
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "export ANSIBLE_INVENTORY=/vagrant/hosts"
   SHELL
 end

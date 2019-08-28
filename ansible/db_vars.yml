@@ -1,0 +1,4 @@
+---
+  db_name: slim_db
+  db_user: slim_user
+  db_host: "%"

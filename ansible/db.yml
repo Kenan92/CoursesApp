@@ -1,0 +1,64 @@
+---
+  - hosts: db_server
+    gather_facts: false
+    become: true
+
+    vars_files:
+      - db_vars.yml
+      - secrets.yml
+
+    tasks:
+      - name: Install pip
+        apt:
+          name: python3-pip
+          state: present
+      - name: Install PyMySQL python package
+        pip:
+          name: PyMySQL
+          state: present
+      - name: Install mysql server
+        apt:
+          name: mysql-server
+          state: present
+      - name: Set root password
+        mysql_user:
+          login_user: root
+          login_unix_socket: /var/run/mysqld/mysqld.sock
+          name: root
+          password: "{{ mysql_root_password }}"
+        ignore_errors: true
+      - name: Set new root password
+        mysql_user:
+          login_user: root
+          login_password: "{{ mysql_root_password }}"
+          user: root
+          password: "{{ new_mysql_root_password }}"
+        when: new_mysql_root_password is defined
+      - name: Change root password
+        set_fact:
+          mysql_root_password: "{{ new_mysql_root_password }}"
+        when: new_mysql_root_password is defined
+      - name: Create mysql database
+        mysql_db:
+          login_user: root
+          login_password: "{{ mysql_root_password }}"
+          name: "{{ db_name }}"
+          state: present
+      - name: Get password for phpmyadmin user
+        shell:
+          grep '$dbpass' /etc/phpmyadmin/config-db.php | cut -d"'" -f2
+        register: phpmyadmin_user_pass
+      - name: Create phpmyadmin user
+        mysql_user:
+          name: phpmyadmin
+          password: "{{ phpmyadmin_user_pass.stdout }}"
+          login_user: root
+          login_password: "{{ mysql_root_password }}"
+      - name: Create mysql user
+        mysql_user:
+          login_user: root
+          login_password: "{{ mysql_root_password }}"
+          name: "{{ db_user }}"
+          password: "{{ db_password }}"
+          host: "{{ db_host }}"
+          priv: "{{ db_name }}.*:ALL"

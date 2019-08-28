@@ -1,2 +1,5 @@
 [web_servers]
 localhost ansible_host=localhost
+
+[db_server]
+localhost ansible_host=localhost

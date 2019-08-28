@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+	{% if domain_name is defined %}ServerName {{ domain_name }} {% endif %}
+
+	ServerAdmin {{ server_admin }}
+	DocumentRoot {{ apache_dir }}/public
+
+	ErrorLog ${APACHE_LOG_DIR}/slim_error.log
+	CustomLog ${APACHE_LOG_DIR}/slim_access.log combined
+
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

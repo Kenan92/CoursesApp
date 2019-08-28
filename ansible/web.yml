@@ -6,6 +6,11 @@
     vars_files:
       - web_vars.yml
       - "{{ env }}_vars.yml"
+    handlers:
+      - name: restart apache
+        systemd:
+          name: apache2
+          state: restarted
 
     tasks:
       - name: Install php and apache2 web server
@@ -34,3 +39,40 @@
         composer:
           working_dir: "{{ web_dir }}"
           command: install
+      - name: Set apache dir variable if web directory is not part of web root and application name is defined
+        set_fact:
+          apache_dir: "{{ web_root }}/{{ app_name }}"
+          create_link: true
+        when: not web_dir.startswith(web_root) and app_name is defined
+      - name: Set apache dir variable if web directory is part of web root
+        set_fact:
+          apache_dir: "{{ web_dir }}"
+        when: web_dir.startswith(web_root)
+      - name: create web directory symlink
+        file:
+          src: "{{ web_dir }}"
+          dest: "{{ apache_dir }}"
+          state: link
+        when: create_link is defined
+      - name: Create web directory
+        file:
+          name: "{{ apache_dir }}"
+          state: directory
+        when: create_link is not defined
+      - name: Add new apache vhost
+        template:
+          src: templates/slim.conf.j2
+          dest: /etc/apache2/sites-available/slim.conf
+        notify: restart apache
+      - name: Enable new apache vhost
+        file:
+          src: /etc/apache2/sites-available/slim.conf
+          dest: /etc/apache2/sites-enabled/slim.conf
+          state: link
+        notify: restart apache
+      - name: disable default apache vhost
+        file:
+          name: /etc/apache2/sites-enabled/000-default.conf
+          state: absent
+        notify: restart apache
+      - include_tasks: "{{ env }}.yml"

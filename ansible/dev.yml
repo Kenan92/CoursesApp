@@ -1,0 +1,13 @@
+---
+  - name: Install phpmyadmin
+    apt:
+      name: phpmyadmin
+      state: present
+    notify: restart apache
+  - name: Add phpmyadmin config to apache2
+    lineinfile:
+      path: /etc/apache2/apache2.conf
+      insertbefore: '^# vim: syntax=apache *'
+      line: "Include /etc/phpmyadmin/apache.conf"
+      state: present
+    notify: restart apache

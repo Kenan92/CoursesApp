@@ -1,2 +1,5 @@
 ---
   web_dir: /vagrant/coursesapp
+  web_root: /var/www/html
+  app_name: slim
+  server_admin: yhya.rakmani.1997@gmail.com

@@ -33,9 +33,6 @@ Now you need to login to the newly created VM with this command `vagrant ssh` an
 The last command will run ansible playbook to configure the VM for running our app, it will install apache web server, php and
 some php extensions along with composer and run composer for you.
 
-We did not so far configure apache2 to serve our app so to serve the application use this command `runapp`, this will create
-a server using PHP's built-in server and serve our application, use `CTRL+C` to quit the server.
-
 Now browse using your favorite web browser to this address to see the main page: `http://localhost:8080/`, it is empty for now, we will
 add content later, stay tuned.
 
