@@ -1,6 +1,3 @@
-.idea/
-/coverage/
 /vendor/
-/logs/app.log
+/logs/*
 !/logs/README.md
-/var/cache/*
