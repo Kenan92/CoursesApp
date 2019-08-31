@@ -48,6 +48,13 @@
         set_fact:
           apache_dir: "{{ web_dir }}"
         when: web_dir.startswith(web_root)
+      - name: Enable apache2 modules
+        apache2_module:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - "{{ apache2_modules }}"
+        notify: restart apache2
       - name: create web directory symlink
         file:
           src: "{{ web_dir }}"

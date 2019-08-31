@@ -67,13 +67,12 @@ Vagrant.configure("2") do |config|
       apt update
       apt install -y software-properties-common
       apt-add-repository --yes ppa:ansible/ansible
-      apt install ansible php apache2 -y
+      apt install ansible -y
       sudo -u vagrant -H bash /vagrant/gen.sh
       rm -f /usr/bin/python
       cp /vagrant/ansible/.vault /home/vagrant/.vault
       chown vagrant:vagrant /home/vagrant/.vault
       chmod 400 /home/vagrant/.vault
-      wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias python=python3"
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias runapp='php -S 0.0.0.0:8080 -t /vagrant/coursesapp/public /vagrant/coursesapp/public/index.php'"
       python3 /vagrant/addLine.py /home/vagrant/.bashrc "alias deploy='ansible-playbook /vagrant/ansible/site.yml -e env=dev --vault-password-file /home/vagrant/.vault'"

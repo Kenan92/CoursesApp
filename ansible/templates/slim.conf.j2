@@ -7,6 +7,17 @@
 	ErrorLog ${APACHE_LOG_DIR}/slim_error.log
 	CustomLog ${APACHE_LOG_DIR}/slim_access.log combined
 
+	<Directory {{ apache_dir }}/public>
+		<IfModule mod_rewrite.c>
+		  RewriteEngine On
+		  RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+		  RewriteRule ^(.*) - [E=BASE:%1]
+
+		  RewriteCond %{REQUEST_FILENAME} !-f
+		  RewriteRule ^ index.php [QSA,L]
+		</IfModule>
+	</Directory>
+
 </VirtualHost>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

@@ -4,3 +4,5 @@
     - php-dom
     - php-mbstring
     - php-zip
+  apache2_modules:
+    - rewrite

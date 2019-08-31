@@ -48,6 +48,7 @@
         shell:
           grep '$dbpass' /etc/phpmyadmin/config-db.php | cut -d"'" -f2
         register: phpmyadmin_user_pass
+        changed_when: false
       - name: Create phpmyadmin user
         mysql_user:
           name: phpmyadmin
