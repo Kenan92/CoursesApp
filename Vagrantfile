@@ -65,7 +65,7 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
       apt update
-      apt install -y software-properties-common
+      apt install -y software-properties-common dos2unix
       apt-add-repository --yes ppa:ansible/ansible
       apt install ansible -y
       sudo -u vagrant -H bash /vagrant/gen.sh

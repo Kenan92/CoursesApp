@@ -54,7 +54,7 @@
           state: present
         with_items:
           - "{{ apache2_modules }}"
-        notify: restart apache2
+        notify: restart apache
       - name: create web directory symlink
         file:
           src: "{{ web_dir }}"

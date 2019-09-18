@@ -12,4 +12,8 @@ $app->get('/yhya' , function (Request $request, Response $response){
     
 });
     
-    
+$app->get('/hello/{name}', function ($request, $response, $args) {
+    return $this->view->render($response, 'profile.html', [
+        'name' => $args['name']
+    ]);
+})->setName('profile');
